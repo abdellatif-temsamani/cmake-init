@@ -1,5 +1,8 @@
 use std::{collections::HashMap, process::exit};
 
+/// A struct to hold the arguments passed to cmake-init.
+/// The arguments are parsed from the command line and stored in this struct.
+/// The struct is then passed to the `init` function to create the project.
 #[derive(Debug)]
 pub struct Args {
     pub name: String,
@@ -87,5 +90,49 @@ impl Args {
     /// This is called when the user passes the `--version` flag.
     pub fn print_version() {
         println!("cmake-init {}", env!("CARGO_PKG_VERSION"));
+    }
+}
+
+/// tests
+#[cfg(test)]
+mod arg_tests {
+    use std::collections::HashMap;
+    #[test]
+    fn test_args() {
+        let mut args = HashMap::new();
+        args.insert("name".to_string(), vec!["test".to_string()]);
+        args.insert("cmake-version".to_string(), vec!["3.0".to_string()]);
+        args.insert("lang".to_string(), vec!["cpp".to_string()]);
+        let args = super::Args::from(args);
+        assert_eq!(args.name, "test");
+        assert_eq!(args.cmake_min_version, "3.0");
+        assert_eq!(args.lang, "cpp");
+    }
+
+    #[test]
+    fn test_args_default() {
+        let mut args = HashMap::new();
+        args.insert("name".to_string(), vec!["test".to_string()]);
+        let args = super::Args::from(args);
+        assert_eq!(args.name, "test");
+        assert_eq!(args.cmake_min_version, "3.0");
+        assert_eq!(args.lang, "");
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_args_panic() {
+        let args = HashMap::new();
+        let _args = super::Args::from(args);
+    }
+
+    #[test]
+    fn test_args_help() {
+        let mut args = HashMap::new();
+        args.insert("help".to_string(), vec!["".to_string()]);
+        let args = super::Args::from(args);
+        assert_eq!(args.name, "");
+        assert_eq!(args.cmake_min_version, "3.0");
+        assert_eq!(args.lang, "");
     }
 }

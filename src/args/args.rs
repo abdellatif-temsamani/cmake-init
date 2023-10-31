@@ -1,5 +1,7 @@
 use std::{collections::HashMap, process::exit};
 
+use super::Languages;
+
 /// A struct to hold the arguments passed to cmake-init.
 /// The arguments are parsed from the command line and stored in this struct.
 /// The struct is then passed to the `init` function to create the project.
@@ -7,7 +9,7 @@ use std::{collections::HashMap, process::exit};
 pub struct Args {
     pub name: String,
     pub cmake_min_version: String,
-    pub lang: String,
+    pub lang: Languages,
 }
 
 impl Args {
@@ -23,7 +25,7 @@ impl Args {
         Args {
             name: Args::get_arg(&argv, "name", true, None),
             cmake_min_version: Args::get_arg(&argv, "cmake-version", false, Some("3.0")),
-            lang: Args::get_arg(&argv, "lang", false, Some("")),
+            lang: Languages::from_string(Args::get_arg(&argv, "lang", false, Some("c"))),
         }
     }
 
@@ -34,7 +36,7 @@ impl Args {
     ///
     /// * `argv` - The argument map.
     /// * `index` - The index of the argument to get.
-    fn get_arg(
+    pub fn get_arg(
         argv: &HashMap<String, Vec<String>>,
         index: &str,
         required: bool,
@@ -96,6 +98,7 @@ impl Args {
 /// tests
 #[cfg(test)]
 mod arg_tests {
+    use super::Languages;
     use std::collections::HashMap;
     #[test]
     fn test_args() {
@@ -106,7 +109,7 @@ mod arg_tests {
         let args = super::Args::from(args);
         assert_eq!(args.name, "test");
         assert_eq!(args.cmake_min_version, "3.0");
-        assert_eq!(args.lang, "cpp");
+        assert_eq!(args.lang, Languages::CPP);
     }
 
     #[test]
@@ -116,7 +119,7 @@ mod arg_tests {
         let args = super::Args::from(args);
         assert_eq!(args.name, "test");
         assert_eq!(args.cmake_min_version, "3.0");
-        assert_eq!(args.lang, "");
+        assert_eq!(args.lang, Languages::CPP);
     }
 
     #[test]
@@ -133,6 +136,6 @@ mod arg_tests {
         let args = super::Args::from(args);
         assert_eq!(args.name, "");
         assert_eq!(args.cmake_min_version, "3.0");
-        assert_eq!(args.lang, "");
+        assert_eq!(args.lang, Languages::CPP);
     }
 }

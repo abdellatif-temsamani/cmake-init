@@ -67,9 +67,9 @@ impl Args {
         if argv.len() == 0 {
             eprintln!("No arguments provided.");
             exit(1);
-        } else if argv.get("help").is_some() {
+        } else if argv.get("help").is_some() || argv.get("h").is_some() {
             Args::print_help();
-        } else if argv.get("version").is_some() {
+        } else if argv.get("version").is_some() || argv.get("v").is_some() {
             Args::print_version();
         }
         exit(0);
@@ -83,9 +83,9 @@ impl Args {
         println!("Options:");
         println!("    --name=<name>                The name of the project.");
         println!("    --cmake-version=<version>    The minimum version of CMake to use.");
-        println!("    --lang=<version>             the language chosen for the project(cpp, c).");
-        println!("    --help                       Print this help message.");
-        println!("   --version                    Print the version of cmake-init.");
+        println!("    --lang=<version>             The language chosen for the project(cpp, c).");
+        println!("    --help | -h                  Print this help message.");
+        println!("   --version | -v                Print the version of cmake-init.");
     }
 
     /// Print the version of cmake-init.

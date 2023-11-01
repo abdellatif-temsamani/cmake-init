@@ -69,10 +69,11 @@ impl Args {
             exit(1);
         } else if argv.get("help").is_some() || argv.get("h").is_some() {
             Args::print_help();
+            exit(0);
         } else if argv.get("version").is_some() || argv.get("v").is_some() {
             Args::print_version();
+            exit(0);
         }
-        exit(0);
     }
 
     /// Print the help message.

@@ -22,6 +22,17 @@ impl Args {
     pub fn from(argv: HashMap<String, Vec<String>>) -> Args {
         Args::validate_args(&argv);
 
+        #[allow(unused_doc_comments)]
+        /**
+         * HACK: This is a hack to check unknown arguments.
+         */
+        for (key, _) in &argv {
+            if key != "name" && key != "cmake-version" && key != "lang" {
+                eprintln!("Unknown argument: {}", key);
+                exit(1);
+            }
+        }
+
         Args {
             name: Args::get_arg(&argv, "name", true, None),
             cmake_min_version: Args::get_arg(&argv, "cmake-version", false, Some("3.0")),

@@ -1,8 +1,8 @@
 mod args;
 
-use args::Args;
-
 use argmap;
+
+use crate::args::Args;
 
 fn main() {
     let (_, argv) = argmap::parse(std::env::args());

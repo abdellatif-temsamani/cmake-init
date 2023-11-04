@@ -1,7 +1,7 @@
 use std::process::exit;
 
 /// Enum for the languages that can be used.
-/// NOTE: Currently only C and C++ are supported.
+/** NOTE: Currently only C and C++ are supported. */
 #[derive(Debug, PartialEq)]
 pub enum Languages {
     C,
@@ -35,8 +35,8 @@ impl ToString for Languages {
     /// * A string representing the language.
     fn to_string(&self) -> String {
         match self {
-            Languages::C => String::from("c"),
-            Languages::CPP => String::from("cpp"),
+            Languages::C => String::from("main.c"),
+            Languages::CPP => String::from("main.cpp"),
         }
     }
 }

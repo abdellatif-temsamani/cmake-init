@@ -5,11 +5,12 @@ use super::Languages;
 /// A struct to hold the arguments passed to cmake-init.
 /// The arguments are parsed from the command line and stored in this struct.
 /// The struct is then passed to the `init` function to create the project.
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Args {
     pub name: String,
     pub cmake_min_version: String,
     pub lang: Languages,
+    pub templates_dir: String,
 }
 
 impl Args {
@@ -27,7 +28,7 @@ impl Args {
          * HACK: This is a hack to check unknown arguments.
          */
         for (key, _) in &argv {
-            if key != "name" && key != "cmake-version" && key != "lang" {
+            if key != "name" && key != "cmake-version" && key != "lang" && key != "templates-dir" {
                 eprintln!("Unknown argument: {}", key);
                 exit(1);
             }
@@ -37,7 +38,60 @@ impl Args {
             name: Args::get_arg(&argv, "name", true, None),
             cmake_min_version: Args::get_arg(&argv, "cmake-version", false, Some("3.0")),
             lang: Languages::from_string(Args::get_arg(&argv, "lang", false, Some("c"))),
+            templates_dir: Args::get_template(&argv),
         }
+    }
+
+    /// Get the template directory path.
+    /// If the user has not specified a template directory, use the default.
+    ///
+    /// # Arguments
+    ///
+    /// * `argv` - The argument map.
+    fn get_template(argv: &HashMap<String, Vec<String>>) -> String {
+        #[cfg(target_os = "linux")]
+        let templates_dir = Args::get_arg(
+            &argv,
+            "templates-dir",
+            false,
+            Some(
+                format!(
+                    "{}/.local/share/cmake-init/templates",
+                    std::env::var("HOME").unwrap()
+                )
+                .as_str(),
+            ),
+        );
+
+        #[cfg(target_os = "windows")]
+        let templates_dir = Args::get_arg(
+            &argv,
+            "templates-dir",
+            false,
+            Some(
+                format!(
+                    "{}\\cmake-init\\templates",
+                    std::env::var("APPDATA").unwrap()
+                )
+                .as_str(),
+            ),
+        );
+
+        #[cfg(target_os = "macos")]
+        let templates_dir = Args::get_arg(
+            &argv,
+            "templates-dir",
+            false,
+            Some(
+                format!(
+                    "{}/Library/Application Support/cmake-init/templates",
+                    std::env::var("HOME").unwrap()
+                )
+                .as_str(),
+            ),
+        );
+
+        templates_dir
     }
 
     /// Get the value of the argument at the given index.
@@ -76,7 +130,7 @@ impl Args {
     /// * `argv` - The argument map.
     fn validate_args(argv: &HashMap<String, Vec<String>>) {
         if argv.len() == 0 {
-            eprintln!("No arguments provided.");
+            Args::print_help();
             exit(1);
         } else if argv.get("help").is_some() || argv.get("h").is_some() {
             Args::print_help();
@@ -96,6 +150,7 @@ impl Args {
         println!("    --name=<name>                The name of the project.");
         println!("    --cmake-version=<version>    The minimum version of CMake to use.");
         println!("    --lang=<version>             The language chosen for the project(cpp, c).");
+        println!("    --templates-dir=<dir>        The directory containing the templates.");
         println!("    --help | -h                  Print this help message.");
         println!("   --version | -v                Print the version of cmake-init.");
     }
@@ -147,6 +202,20 @@ mod arg_tests {
         args.insert("help".to_string(), vec!["".to_string()]);
         let args = super::Args::from(args);
         assert_eq!(args.name, "");
+        assert_eq!(args.cmake_min_version, "3.0");
+        assert_eq!(args.lang, Languages::CPP);
+    }
+
+    #[test]
+    #[should_panic]
+    fn unknown_args() {
+        let mut args = HashMap::new();
+        args.insert("name".to_string(), vec!["test".to_string()]);
+        args.insert("cmake-version".to_string(), vec!["3.0".to_string()]);
+        args.insert("lang".to_string(), vec!["cpp".to_string()]);
+        args.insert("unknown".to_string(), vec!["".to_string()]);
+        let args = super::Args::from(args);
+        assert_eq!(args.name, "test");
         assert_eq!(args.cmake_min_version, "3.0");
         assert_eq!(args.lang, Languages::CPP);
     }

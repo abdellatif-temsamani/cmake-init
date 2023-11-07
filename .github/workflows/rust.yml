@@ -21,29 +21,23 @@ jobs:
 
         steps:
             - uses: actions/checkout@v3
-            - name: Build
-              run: cargo build --release
 
-            - name: create test dir
-              run: mkdir testdir
-
-            - name: copy binary
+            - name: build and run cli
               run: |
+                  cargo build --release
+                  mkdir testdir
                   cp target/release/cmake-init testdir
 
-            - name: run binary
-              run: |
                   cd testdir
-                  ./cmake-init --name=test
+                  ./cmake-init --name test
                   if [ "$?" -eq 0 ]; then
                       echo "Test passed"
                       exit 0
                   else
                       echo "Test failed"
-                      exit 1
                   fi
 
-                  if [[ -f "src/main.c" ]] || [[ -f "CMakeLists.txt" ]]; then
+                  if [[ -f "src/main.c" ]] ; then
                       echo "Test passed"
                       exit 0
                   else

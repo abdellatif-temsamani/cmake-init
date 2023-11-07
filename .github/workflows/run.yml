@@ -9,7 +9,7 @@ env:
     CARGO_TERM_COLOR: always
 
 jobs:
-    build-linux:
+    run-linux:
         runs-on: ubuntu-latest
 
         steps:
@@ -20,7 +20,7 @@ jobs:
             - name: run
               run: cargo run -- --name testrun
 
-    build-windows:
+    run-windows:
         runs-on: windows-latest
 
         steps:
@@ -31,7 +31,7 @@ jobs:
             - name: run
               run: cargo run -- --name testrun
 
-    build-macos:
+    run-macos:
         runs-on: macos-latest
 
         steps:

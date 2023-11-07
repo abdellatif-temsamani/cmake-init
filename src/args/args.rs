@@ -1,11 +1,12 @@
 use std::{collections::HashMap, process::exit};
+use struct_field_names_as_array::FieldNamesAsArray;
 
 use crate::args::languages::Languages;
 
 /// A struct to hold the arguments passed to cmake-init.
 /// The arguments are parsed from the command line and stored in this struct.
 /// The struct is then passed to the `init` function to create the project.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, FieldNamesAsArray)]
 pub struct Args {
     pub name: String,
     pub cmake_min_version: String,
@@ -23,14 +24,13 @@ impl Args {
     pub fn from(argv: HashMap<String, Vec<String>>) -> Args {
         Args::validate_args(&argv);
 
-        #[allow(unused_doc_comments)]
-        /**
-         * HACK: This is a hack to check unknown arguments.
-         */
         for (key, _) in &argv {
-            if key != "name" && key != "cmake-version" && key != "lang" && key != "templates-dir" {
-                eprintln!("Unknown argument: {}", key);
-                exit(1);
+            for known_arg in Args::FIELD_NAMES_AS_ARRAY {
+                if key != known_arg {
+                    eprintln!("Unknown argument: {}", key);
+                    eprintln!("Run `cmake-init --help` for more information.");
+                    exit(1);
+                }
             }
         }
 

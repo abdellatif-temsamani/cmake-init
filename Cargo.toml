@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 argmap = "1.1.2"
+struct-field-names-as-array = "0.3.0"

@@ -1,5 +1,5 @@
 ---
-name: Test build
+name: Test run
 
 on:
     pull_request:
@@ -9,24 +9,35 @@ env:
     CARGO_TERM_COLOR: always
 
 jobs:
-    build-linux:
+    run-linux:
         runs-on: ubuntu-latest
 
         steps:
             - uses: actions/checkout@v3
             - name: Build
-              run: cargo build --verbose --release
-    build-windows:
+              run: ./install_linux.sh
+
+            - name: run
+              run: cargo run -- --name testrun
+
+    run-windows:
         runs-on: windows-latest
 
         steps:
             - uses: actions/checkout@v3
             - name: Build
-              run: cargo build --verbose --release
-    build-macos:
+              run: .\install_win.bat
+
+            - name: run
+              run: cargo run -- --name testrun
+
+    run-macos:
         runs-on: macos-latest
 
         steps:
             - uses: actions/checkout@v3
             - name: Build
-              run: cargo build --verbose --release
+              run: ./install_macos.sh
+
+            - name: run
+              run: cargo run -- --name testrun

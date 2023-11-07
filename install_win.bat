@@ -1,6 +1,6 @@
 @echo off
 
-cargo install --release
+cargo build --release
 
 mkdir "%APPDATA%\\cmake-init\\templates"
 xcopy /s /y "templates" "%APPDATA%\\cmake-init\\templates"

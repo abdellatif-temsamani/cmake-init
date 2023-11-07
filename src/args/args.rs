@@ -3,9 +3,16 @@ use struct_field_names_as_array::FieldNamesAsArray;
 
 use crate::args::languages::Languages;
 
-/// A struct to hold the arguments passed to cmake-init.
-/// The arguments are parsed from the command line and stored in this struct.
-/// The struct is then passed to the `init` function to create the project.
+/// # Args struct
+///
+/// This struct is used to parse the arguments passed to the program.
+///
+/// ## Fields
+///
+/// * `name` - The name of the project
+/// * `cmake_min_version` - The minimum version of CMake to use
+/// * `lang` - The language chosen for the project
+/// * `templates_dir` - The directory containing the template
 #[derive(Debug, PartialEq, FieldNamesAsArray)]
 pub struct Args {
     pub name: String,

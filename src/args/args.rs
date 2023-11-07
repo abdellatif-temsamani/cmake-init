@@ -23,14 +23,12 @@ impl Args {
     /// * `argv` - The argument map.
     pub fn from(argv: HashMap<String, Vec<String>>) -> Args {
         Args::validate_args(&argv);
+        let known_args = Args::FIELD_NAMES_AS_ARRAY;
 
         for (key, _) in &argv {
-            for known_arg in Args::FIELD_NAMES_AS_ARRAY {
-                if key != known_arg {
-                    eprintln!("Unknown argument: {}", key);
-                    eprintln!("Run `cmake-init --help` for more information.");
-                    exit(1);
-                }
+            if !known_args.contains(&key.as_str()) {
+                eprintln!("Unknown argument: {}", key);
+                exit(1);
             }
         }
 

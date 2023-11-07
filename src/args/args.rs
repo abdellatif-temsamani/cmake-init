@@ -1,6 +1,6 @@
 use std::{collections::HashMap, process::exit};
 
-use super::Languages;
+use crate::args::languages::Languages;
 
 /// A struct to hold the arguments passed to cmake-init.
 /// The arguments are parsed from the command line and stored in this struct.
@@ -44,6 +44,7 @@ impl Args {
 
     /// Get the template directory path.
     /// If the user has not specified a template directory, use the default.
+    /// The default template directory is platform dependent.
     ///
     /// # Arguments
     ///

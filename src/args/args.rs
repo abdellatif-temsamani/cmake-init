@@ -148,10 +148,10 @@ impl Args {
         println!("Usage: cmake-init --name=<name>");
         println!();
         println!("Options:");
-        println!("    --name=<name>                The name of the project.");
-        println!("    --cmake-version=<version>    The minimum version of CMake to use.");
-        println!("    --lang=<version>             The language chosen for the project(cpp, c).");
-        println!("    --templates-dir=<dir>        The directory containing the templates.");
+        println!("    --name <name>                The name of the project.");
+        println!("    --cmake-version <version>    The minimum version of CMake to use.");
+        println!("    --lang <version>             The language chosen for the project(cpp, c).");
+        println!("    --templates-dir <dir>        The directory containing the templates.");
         println!("    --help | -h                  Print this help message.");
         println!("   --version | -v                Print the version of cmake-init.");
     }

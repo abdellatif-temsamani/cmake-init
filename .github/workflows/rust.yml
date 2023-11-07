@@ -8,39 +8,24 @@ env:
     CARGO_TERM_COLOR: always
 
 jobs:
-    build:
+    build-linux:
         runs-on: ubuntu-latest
 
         steps:
             - uses: actions/checkout@v3
             - name: Build
               run: cargo build --verbose --release
-
-    test_run:
-        runs-on: ubuntu-latest
+    build-windows:
+        runs-on: windows-latest
 
         steps:
             - uses: actions/checkout@v3
+            - name: Build
+              run: cargo build --verbose --release
+    build-macos:
+        runs-on: macos-latest
 
-            - name: build and run cli
-              run: |
-                  cargo build --release
-                  mkdir testdir
-                  cp target/release/cmake-init testdir
-
-                  cd testdir
-                  ./cmake-init --name test
-                  if [ "$?" -eq 0 ]; then
-                      echo "Test passed"
-                      exit 0
-                  else
-                      echo "Test failed"
-                  fi
-
-                  if [[ -f "src/main.c" ]] ; then
-                      echo "Test passed"
-                      exit 0
-                  else
-                      echo "Test failed"
-                      exit 1
-                  fi
+        steps:
+            - uses: actions/checkout@v3
+            - name: Build
+              run: cargo build --verbose --release

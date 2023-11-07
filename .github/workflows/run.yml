@@ -14,18 +14,29 @@ jobs:
         steps:
             - uses: actions/checkout@v3
             - name: Build
-              run: cargo build --verbose --release
+              run: ./install_linux.sh
+
+            - name: run
+              run: cargo run -- --name testrun
+
     build-windows:
         runs-on: windows-latest
 
         steps:
             - uses: actions/checkout@v3
             - name: Build
-              run: cargo build --verbose --release
+              run: .\install_win.bat
+
+            - name: run
+              run: cargo run -- --name testrun
+
     build-macos:
         runs-on: macos-latest
 
         steps:
             - uses: actions/checkout@v3
             - name: Build
-              run: cargo build --verbose --release
+              run: ./install_macos.sh
+
+            - name: run
+              run: cargo run -- --name testrun

@@ -1,4 +1,5 @@
-name: Rust
+---
+name: Test run
 
 on:
     pull_request:

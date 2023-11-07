@@ -9,8 +9,8 @@ mkdir -p "$HOME/Library/Application Support/cmake-init/templates"
 
 
 # copying files
-cp ./target/release/cmake-init ~/.local/bin/
-cp -r ./templates ~/.local/share/cmake-init/
+cp ./target/release/cmake-init "$HOME/.local/bin/"
+cp -r ./templates "$HOME/Library/Application Support/cmake-init/"
 
 echo "export PATH=$PATH:~/.local/bin" >> ~/.bashrc
 

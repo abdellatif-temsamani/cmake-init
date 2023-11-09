@@ -1,17 +1,13 @@
 #!/bin/sh
 
-# building cmake-init
-cargo build --release
+printf "\033[1;31m"
+echo "Uninstalling cmake-init..."
+printf "\033[0m\n"
 
 # creating necessary directories
-mkdir -p "$HOME/.local/bin/"
-mkdir -p "$HOME/Library/Application Support/cmake-init/templates"
+rm -v"$HOME/.local/bin/cmake-init"
+rm -fm "$HOME/Library/Application Support/cmake-init"
 
-
-# copying files
-cp ./target/release/cmake-init "$HOME/.local/bin/"
-cp -r ./templates "$HOME/Library/Application Support/cmake-init/"
-
-echo "export PATH=$PATH:~/.local/bin" >> ~/.bashrc
-
-echo "Installation complete!"
+printf "\033[1;31m"
+echo "Uninstallation complete!"
+printf "\033[0m\n"

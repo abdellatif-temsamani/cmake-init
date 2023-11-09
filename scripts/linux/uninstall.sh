@@ -1,17 +1,13 @@
 #!/bin/sh
 
-# building cmake-init
-cargo build --release
+printf "\033[1;31m"
+echo "Uninstalling cmake-init..."
+printf "\033[0m\n"
 
 # creating necessary directories
-mkdir -p "$HOME/.local/bin/"
-mkdir -p "$HOME/.local/share/cmake-init/"
+rm -v "$HOME/.local/bin/cmake-init" 2>/dev/null
+rm -rvf "$HOME/.local/share/cmake-init/" 2>/dev/null
 
-
-# copying files
-cp ./target/release/cmake-init ~/.local/bin/
-cp -r ./templates ~/.local/share/cmake-init/
-
-echo "export PATH=$PATH:~/.local/bin" >> ~/.bashrc
-
-echo "Installation complete!"
+printf "\033[1;31m"
+echo "Uninstallation complete!"
+printf "\033[0m\n"

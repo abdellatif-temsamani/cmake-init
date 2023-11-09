@@ -15,7 +15,7 @@ jobs:
         steps:
             - uses: actions/checkout@v3
             - name: Build
-              run: ./install_linux.sh
+              run: ./scripts/linux/install.sh
 
             - name: run
               run: cargo run -- --name testrun
@@ -26,7 +26,7 @@ jobs:
         steps:
             - uses: actions/checkout@v3
             - name: Build
-              run: .\install_win.bat
+              run: ./scripts/win/install.bat
 
             - name: run
               run: cargo run -- --name testrun
@@ -37,7 +37,7 @@ jobs:
         steps:
             - uses: actions/checkout@v3
             - name: Build
-              run: ./install_macos.sh
+              run: ./scripts/macos/install.sh
 
             - name: run
               run: cargo run -- --name testrun

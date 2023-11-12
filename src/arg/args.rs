@@ -1,7 +1,7 @@
 use std::{collections::HashMap, process::exit};
 use struct_field_names_as_array::FieldNamesAsArray;
 
-use crate::args::languages::Languages;
+use super::languages::Languages;
 
 /// # Args struct
 ///
@@ -32,7 +32,7 @@ impl Args {
         Args::validate_args(&argv);
         let known_args = Args::FIELD_NAMES_AS_ARRAY;
 
-        for (key, _) in &argv {
+        for key in argv.keys() {
             if !known_args.contains(&key.as_str()) {
                 eprintln!("Unknown argument: {}", key);
                 exit(1);
@@ -57,7 +57,7 @@ impl Args {
     fn get_template(argv: &HashMap<String, Vec<String>>) -> String {
         #[cfg(target_os = "linux")]
         let templates_dir = Args::get_arg(
-            &argv,
+            argv,
             "templates-dir",
             false,
             Some(
@@ -135,7 +135,7 @@ impl Args {
     ///
     /// * `argv` - The argument map.
     fn validate_args(argv: &HashMap<String, Vec<String>>) {
-        if argv.len() == 0 {
+        if argv.is_empty() {
             Args::print_help();
             exit(1);
         } else if argv.get("help").is_some() || argv.get("h").is_some() {

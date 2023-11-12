@@ -5,7 +5,7 @@ use std::process::exit;
 #[derive(Debug, PartialEq)]
 pub enum Languages {
     C,
-    CPP,
+    Cpp,
 }
 
 impl Languages {
@@ -18,7 +18,7 @@ impl Languages {
     pub fn from_string(name: String) -> Languages {
         match &name as &str {
             "c" => Languages::C,
-            "cpp" => Languages::CPP,
+            "cpp" => Languages::Cpp,
             _ => {
                 eprintln!("{} is not a valid language.", name);
                 exit(1);
@@ -36,7 +36,7 @@ impl ToString for Languages {
     fn to_string(&self) -> String {
         match self {
             Languages::C => String::from("main.c"),
-            Languages::CPP => String::from("main.cpp"),
+            Languages::Cpp => String::from("main.cpp"),
         }
     }
 }

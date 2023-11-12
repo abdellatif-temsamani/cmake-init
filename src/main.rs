@@ -1,9 +1,7 @@
-mod args;
+mod arg;
 mod template;
 
-use argmap;
-
-use crate::args::Args;
+use crate::arg::Args;
 use crate::template::Template;
 
 fn main() {

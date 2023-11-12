@@ -1,4 +1,4 @@
-use crate::args::Args;
+use crate::arg::Args;
 use std::{path::PathBuf, process::exit};
 
 /// # Template struct
@@ -76,18 +76,16 @@ impl Template {
     /// Get the CMakeLists.txt template.
     /// This is a three element array of strings.
     fn get_cmake_template(&self) -> [String; 3] {
+        let project_name = self.args.name.to_lowercase().replace('-', "_");
         [
-            format!(
-                "project({})",
-                self.args.name.to_lowercase().replace("-", "_")
-            ),
+            format!("project({})", project_name),
             format!(
                 "cmake_minimum_required(VERSION {})",
                 self.args.cmake_min_version
             ),
             format!(
                 "add_executable({} src/{})",
-                self.args.name.to_lowercase().replace("-", "_"),
+                project_name,
                 self.args.lang.to_string()
             ),
         ]

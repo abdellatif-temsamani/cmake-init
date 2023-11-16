@@ -13,7 +13,7 @@ use super::languages::Languages;
 /// * `cmake_min_version` - The minimum version of CMake to use
 /// * `lang` - The language chosen for the project
 /// * `templates_dir` - The directory containing the template
-#[derive(Debug, PartialEq, FieldNamesAsArray)]
+#[derive(Debug, FieldNamesAsArray, Clone)]
 pub struct Args {
     pub name: String,
     pub cmake_min_version: String,

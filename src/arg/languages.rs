@@ -2,7 +2,7 @@ use std::process::exit;
 
 /// Enum for the languages that can be used.
 /** NOTE: Currently only C and C++ are supported. */
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone)]
 pub enum Languages {
     C,
     Cpp,
@@ -43,8 +43,8 @@ impl Languages {
     /// # Returns
     ///
     /// * A array of the main file path and the main file name.
-    pub fn to_main(&self) -> [String; 2] {
-        [self.to_string(), format!("main.{}", self.file_extension())]
+    pub fn to_main(&self) -> String {
+        format!("main.{}", self.file_extension())
     }
 }
 

@@ -1,5 +1,7 @@
-use crate::args::Args;
-use std::{path::PathBuf, process::exit};
+use super::git::Git;
+use crate::arg::Args;
+use std::fs;
+use std::path::PathBuf;
 
 /// # Template struct
 ///
@@ -11,8 +13,8 @@ use std::{path::PathBuf, process::exit};
 /// * `args` - The arguments passed to the program
 /// * `pwd` - The current working directory
 pub struct Template {
-    pub args: Args,
-    pub pwd: PathBuf,
+    args: Args,
+    pwd: PathBuf,
 }
 
 impl Template {
@@ -33,37 +35,43 @@ impl Template {
     /// If the main file does not exist, create it.
     /// If the CMakeLists.txt file does not exist, create it.
     pub fn create(&self) {
-        // create src directory if it doesn't exist
-        let template = self.get_template();
-
-        let src_dir = self.pwd.join("src");
-        if !src_dir.exists() {
-            std::fs::create_dir(src_dir).unwrap();
-        }
-
-        // create main file
-        let main_file = self.pwd.join("src").join(self.args.lang.to_string());
-        if !main_file.exists() {
-            std::fs::write(main_file, template).unwrap();
-        }
+        let git = Git::new(self.args.git_path.clone());
+        self.get_template();
 
         // create CMakeLists.txt
         self.create_cmakelists();
+
+        git.init();
     }
 
     /// Get the template file contents.
     /// If the template file does not exist, print an error and exit.
-    fn get_template(&self) -> String {
-        // read template file
-        let template_file = self
-            .pwd
-            .join(&self.args.templates_dir)
-            .join(self.args.lang.to_string());
+    fn get_template(&self) {
+        let dir = format!("{}/{}", self.args.templates_dir, self.args.lang.to_string());
 
-        std::fs::read_to_string(template_file).unwrap_or_else(|_| {
-            eprintln!("cannot read template file");
-            exit(1);
-        })
+        // git ignore file
+        let file = fs::read(format!("{}/.gitignore", dir)).unwrap();
+        let new_file = self.pwd.join(".gitignore");
+        fs::write(new_file, file).unwrap();
+
+        let src = self.pwd.join("src");
+        // create src directory
+        if !src.exists() {
+            fs::create_dir(src.clone()).unwrap();
+        }
+
+        let files = fs::read_dir(format!("{}/src", dir)).unwrap();
+
+        for file in files {
+            let file = file.unwrap();
+            let file_name = file.file_name();
+            let file_name = file_name.to_str().unwrap();
+
+            println!("Creating file: {}", file_name);
+            let file = fs::read(format!("{}/src/{}", dir, file_name)).unwrap();
+            let new_file = src.join(file_name);
+            fs::write(new_file, file).unwrap();
+        }
     }
 
     /// Create the CMakeLists.txt file.
@@ -76,19 +84,17 @@ impl Template {
     /// Get the CMakeLists.txt template.
     /// This is a three element array of strings.
     fn get_cmake_template(&self) -> [String; 3] {
+        let project_name = self.args.name.to_lowercase().replace('-', "_");
         [
-            format!(
-                "project({})",
-                self.args.name.to_lowercase().replace("-", "_")
-            ),
+            format!("project({})", project_name),
             format!(
                 "cmake_minimum_required(VERSION {})",
-                self.args.cmake_min_version
+                self.args.cmake_version
             ),
             format!(
                 "add_executable({} src/{})",
-                self.args.name.to_lowercase().replace("-", "_"),
-                self.args.lang.to_string()
+                project_name,
+                self.args.lang.to_main()
             ),
         ]
     }

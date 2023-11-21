@@ -1,7 +1,7 @@
 use std::{collections::HashMap, process::exit};
 use struct_field_names_as_array::FieldNamesAsArray;
 
-use crate::args::languages::Languages;
+use super::languages::Languages;
 
 /// # Args struct
 ///
@@ -13,12 +13,14 @@ use crate::args::languages::Languages;
 /// * `cmake_min_version` - The minimum version of CMake to use
 /// * `lang` - The language chosen for the project
 /// * `templates_dir` - The directory containing the template
-#[derive(Debug, PartialEq, FieldNamesAsArray)]
+#[derive(Debug, FieldNamesAsArray, Clone)]
 pub struct Args {
     pub name: String,
-    pub cmake_min_version: String,
+    pub cmake_version: String,
     pub lang: Languages,
     pub templates_dir: String,
+    pub github_cli: String,
+    pub git_path: String,
 }
 
 impl Args {
@@ -32,7 +34,8 @@ impl Args {
         Args::validate_args(&argv);
         let known_args = Args::FIELD_NAMES_AS_ARRAY;
 
-        for (key, _) in &argv {
+        for key in argv.keys() {
+            let key = key.replace("-", "_");
             if !known_args.contains(&key.as_str()) {
                 eprintln!("Unknown argument: {}", key);
                 exit(1);
@@ -41,9 +44,11 @@ impl Args {
 
         Args {
             name: Args::get_arg(&argv, "name", true, None),
-            cmake_min_version: Args::get_arg(&argv, "cmake-version", false, Some("3.0")),
+            cmake_version: Args::get_arg(&argv, "cmake-version", false, Some("3.0")),
             lang: Languages::from_string(Args::get_arg(&argv, "lang", false, Some("c"))),
             templates_dir: Args::get_template(&argv),
+            github_cli: Args::get_arg(&argv, "github-cli", false, Some("False")),
+            git_path: Args::get_arg(&argv, "git-path", false, Some("git")),
         }
     }
 
@@ -57,7 +62,7 @@ impl Args {
     fn get_template(argv: &HashMap<String, Vec<String>>) -> String {
         #[cfg(target_os = "linux")]
         let templates_dir = Args::get_arg(
-            &argv,
+            argv,
             "templates-dir",
             false,
             Some(
@@ -135,7 +140,7 @@ impl Args {
     ///
     /// * `argv` - The argument map.
     fn validate_args(argv: &HashMap<String, Vec<String>>) {
-        if argv.len() == 0 {
+        if argv.is_empty() {
             Args::print_help();
             exit(1);
         } else if argv.get("help").is_some() || argv.get("h").is_some() {
@@ -153,10 +158,15 @@ impl Args {
         println!("Usage: cmake-init --name=<name>");
         println!();
         println!("Options:");
-        println!("    --name <name>                The name of the project.");
+        println!("    --name <name>   [required]   The name of the project.");
         println!("    --cmake-version <version>    The minimum version of CMake to use.");
         println!("    --lang <version>             The language chosen for the project(cpp, c).");
         println!("    --templates-dir <dir>        The directory containing the templates.");
+        println!("    --github-cli <True|False>    Use the GitHub CLI to create a repository.");
+        println!("    --git-path <path>            The path to the git binary.");
+        println!("      if you're using GitHub CLI, you can set this to 'gh'");
+        println!("      if you're using git, you can set this to 'git'");
+        println!();
         println!("    --help | -h                  Print this help message.");
         println!("   --version | -v                Print the version of cmake-init.");
     }

@@ -1,6 +1,7 @@
+use super::git::Git;
 use crate::arg::Args;
 use std::fs;
-use std::{path::PathBuf, process::exit};
+use std::path::PathBuf;
 
 /// # Template struct
 ///
@@ -34,10 +35,13 @@ impl Template {
     /// If the main file does not exist, create it.
     /// If the CMakeLists.txt file does not exist, create it.
     pub fn create(&self) {
+        let git = Git::new(self.args.git_path.clone());
         self.get_template();
 
         // create CMakeLists.txt
         self.create_cmakelists();
+
+        git.init();
     }
 
     /// Get the template file contents.
@@ -85,7 +89,7 @@ impl Template {
             format!("project({})", project_name),
             format!(
                 "cmake_minimum_required(VERSION {})",
-                self.args.cmake_min_version
+                self.args.cmake_version
             ),
             format!(
                 "add_executable({} src/{})",

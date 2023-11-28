@@ -1,3 +1,7 @@
+[![Test build](https://github.com/abdellatif-temsamani/cmake-init/actions/workflows/rust.yml/badge.svg)](https://github.com/abdellatif-temsamani/cmake-init/actions/workflows/rust.yml)
+
+[![Test run](https://github.com/abdellatif-temsamani/cmake-init/actions/workflows/run.yml/badge.svg)](https://github.com/abdellatif-temsamani/cmake-init/actions/workflows/run.yml)
+
 # CMAKE-INIT
 
 <!-- toc -->

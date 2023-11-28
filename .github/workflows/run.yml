@@ -18,7 +18,10 @@ jobs:
               run: ./scripts/linux/install.sh
 
             - name: run
-              run: cargo run -- --name testrun
+              run: |
+                  git config --global user.email "you@example.com"
+                  git config --global user.name "Your Name"
+                  cargo run -- --name testrun
 
     run-windows:
         runs-on: windows-latest
@@ -29,7 +32,10 @@ jobs:
               run: ./scripts/win/install.bat
 
             - name: run
-              run: cargo run -- --name testrun
+              run: |
+                  git config --global user.email "you@example.com"
+                  git config --global user.name "Your Name"
+                  cargo run -- --name testrun
 
     run-macos:
         runs-on: macos-latest

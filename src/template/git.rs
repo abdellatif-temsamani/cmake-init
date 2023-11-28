@@ -17,12 +17,6 @@ impl Git {
     }
 
     fn execute(&self, args: &[&str]) -> Result<String, String> {
-        // let output = the output of `self.binary args`
-        // if output.status.success() {
-        //     Ok(output.stdout)
-        // } else {
-        //     Err(output.stderr)
-        // }
         std::process::Command::new(&self.path)
             .args(args)
             .output()

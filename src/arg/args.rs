@@ -13,13 +13,13 @@ use super::languages::Languages;
 /// * `cmake_min_version` - The minimum version of CMake to use
 /// * `lang` - The language chosen for the project
 /// * `templates_dir` - The directory containing the template
+/// * `git_path` - The path to the git binary
 #[derive(Debug, FieldNamesAsArray, Clone)]
 pub struct Args {
     pub name: String,
     pub cmake_version: String,
     pub lang: Languages,
     pub templates_dir: String,
-    pub github_cli: String,
     pub git_path: String,
 }
 
@@ -35,9 +35,9 @@ impl Args {
         let known_args = Args::FIELD_NAMES_AS_ARRAY;
 
         for key in argv.keys() {
-            let key = key.replace("-", "_");
-            if !known_args.contains(&key.as_str()) {
-                eprintln!("Unknown argument: {}", key);
+            let thekey = key.replace('-', "_");
+            if !known_args.contains(&thekey.as_str()) {
+                eprintln!("Unknown argument: {}", format!("--{}", key));
                 exit(1);
             }
         }
@@ -47,7 +47,6 @@ impl Args {
             cmake_version: Args::get_arg(&argv, "cmake-version", false, Some("3.0")),
             lang: Languages::from_string(Args::get_arg(&argv, "lang", false, Some("c"))),
             templates_dir: Args::get_template(&argv),
-            github_cli: Args::get_arg(&argv, "github-cli", false, Some("False")),
             git_path: Args::get_arg(&argv, "git-path", false, Some("git")),
         }
     }
@@ -155,20 +154,19 @@ impl Args {
     /// Print the help message.
     /// This is called when the user passes the `--help` flag.
     fn print_help() {
-        println!("Usage: cmake-init --name=<name>");
+        println!("Usage: cmake-init --name <name>");
         println!();
         println!("Options:");
         println!("    --name <name>   [required]   The name of the project.");
         println!("    --cmake-version <version>    The minimum version of CMake to use.");
         println!("    --lang <version>             The language chosen for the project(cpp, c).");
         println!("    --templates-dir <dir>        The directory containing the templates.");
-        println!("    --github-cli <True|False>    Use the GitHub CLI to create a repository.");
         println!("    --git-path <path>            The path to the git binary.");
         println!("      if you're using GitHub CLI, you can set this to 'gh'");
         println!("      if you're using git, you can set this to 'git'");
         println!();
         println!("    --help | -h                  Print this help message.");
-        println!("   --version | -v                Print the version of cmake-init.");
+        println!("    --version | -v               Print the version of cmake-init.");
     }
 
     /// Print the version of cmake-init.

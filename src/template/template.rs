@@ -67,7 +67,6 @@ impl Template {
             let file_name = file.file_name();
             let file_name = file_name.to_str().unwrap();
 
-            println!("Creating file: {}", file_name);
             let file = fs::read(format!("{}/src/{}", dir, file_name)).unwrap();
             let new_file = src.join(file_name);
             fs::write(new_file, file).unwrap();

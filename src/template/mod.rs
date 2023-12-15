@@ -1,4 +1,4 @@
 mod git;
-mod template;
+mod manager;
 
-pub use template::Template;
+pub use manager::Template;

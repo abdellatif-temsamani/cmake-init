@@ -37,7 +37,7 @@ impl Args {
         for key in argv.keys() {
             let thekey = key.replace('-', "_");
             if !known_args.contains(&thekey.as_str()) {
-                eprintln!("Unknown argument: {}", format!("--{}", key));
+                eprintln!("Unknown argument: --{}", key);
                 exit(1);
             }
         }

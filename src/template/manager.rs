@@ -60,7 +60,7 @@ impl Template {
             fs::create_dir(src.clone()).unwrap();
         }
 
-        let files = fs::read_dir(format!("{}/src", dir)).unwrap();
+        let files = fs::read_dir(&dir).unwrap();
 
         self.copy_files(files, dir, None);
     }
@@ -91,14 +91,12 @@ impl Template {
     }
 
     fn copy_files(&self, files: fs::ReadDir, dir: String, src: Option<String>) {
-        println!("src: {:?}", src);
         for file in files {
             let file = file.unwrap();
             let file_name = file.file_name();
             let file_name = file_name.to_str().unwrap();
 
             let file_type = file.file_type().unwrap();
-            println!("file: {:?}", file_type);
 
             if file_type.is_dir() {
                 self.copy_files(
@@ -107,13 +105,13 @@ impl Template {
                     Some(file_name.to_string()),
                 );
             } else {
-                let file = fs::read(format!("{}/src/{}", dir, file_name)).unwrap();
+                let file = fs::read(format!("{}/{}", dir, file_name)).unwrap();
                 let new_file = self.pwd.join(format!(
-                    "{}{}",
-                    src.clone().unwrap_or("".to_string()),
+                    "{}/{}",
+                    src.clone().unwrap_or(".".to_string()),
                     file_name
                 ));
-                // fs::write(new_file, file).unwrap();
+                fs::write(new_file, file).unwrap();
             }
         }
     }

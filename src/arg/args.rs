@@ -1,7 +1,7 @@
 use std::{collections::HashMap, process::exit};
 use struct_field_names_as_array::FieldNamesAsArray;
 
-use super::languages::Languages;
+use super::languages::Language;
 
 /// # Args struct
 ///
@@ -18,7 +18,7 @@ use super::languages::Languages;
 pub struct Args {
     pub name: String,
     pub cmake_version: String,
-    pub lang: Languages,
+    pub lang: Language,
     pub templates_dir: String,
     pub git_path: String,
 }
@@ -45,7 +45,7 @@ impl Args {
         Args {
             name: Args::get_arg(&argv, "name", true, None),
             cmake_version: Args::get_arg(&argv, "cmake-version", false, Some("3.0")),
-            lang: Languages::from_string(Args::get_arg(&argv, "lang", false, Some("c"))),
+            lang: Language::from_string(Args::get_arg(&argv, "lang", false, Some("c"))),
             templates_dir: Args::get_template(&argv),
             git_path: Args::get_arg(&argv, "git-path", false, Some("git")),
         }

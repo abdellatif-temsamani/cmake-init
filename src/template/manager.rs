@@ -62,15 +62,7 @@ impl Template {
 
         let files = fs::read_dir(format!("{}/src", dir)).unwrap();
 
-        for file in files {
-            let file = file.unwrap();
-            let file_name = file.file_name();
-            let file_name = file_name.to_str().unwrap();
-
-            let file = fs::read(format!("{}/src/{}", dir, file_name)).unwrap();
-            let new_file = src.join(file_name);
-            fs::write(new_file, file).unwrap();
-        }
+        self.copy_files(files, dir, None);
     }
 
     /// Create the CMakeLists.txt file.
@@ -96,5 +88,33 @@ impl Template {
                 self.args.lang.to_main()
             ),
         ]
+    }
+
+    fn copy_files(&self, files: fs::ReadDir, dir: String, src: Option<String>) {
+        println!("src: {:?}", src);
+        for file in files {
+            let file = file.unwrap();
+            let file_name = file.file_name();
+            let file_name = file_name.to_str().unwrap();
+
+            let file_type = file.file_type().unwrap();
+            println!("file: {:?}", file_type);
+
+            if file_type.is_dir() {
+                self.copy_files(
+                    fs::read_dir(file.path()).unwrap(),
+                    format!("{}/{}", dir, file_name),
+                    Some(file_name.to_string()),
+                );
+            } else {
+                let file = fs::read(format!("{}/src/{}", dir, file_name)).unwrap();
+                let new_file = self.pwd.join(format!(
+                    "{}{}",
+                    src.clone().unwrap_or("".to_string()),
+                    file_name
+                ));
+                // fs::write(new_file, file).unwrap();
+            }
+        }
     }
 }

@@ -35,21 +35,7 @@ impl Git {
         match self.execute(&["init"]) {
             Ok(_) => (),
             Err(e) => {
-                eprintln!("Error: {}", e);
-                exit(1);
-            }
-        }
-        match self.execute(&["add", "."]) {
-            Ok(_) => (),
-            Err(e) => {
-                eprintln!("Error: {}", e);
-                exit(1);
-            }
-        }
-        match self.execute(&["commit", "-m", "\"Initial commit\""]) {
-            Ok(_) => (),
-            Err(e) => {
-                eprintln!("Error: {}", e);
+                eprintln!("Error: git init failed: {}", e);
                 exit(1);
             }
         }

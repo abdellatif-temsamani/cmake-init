@@ -34,13 +34,13 @@ impl Args {
         Args::validate_args(&argv);
         let known_args = Args::FIELD_NAMES_AS_ARRAY;
 
-        for key in argv.keys() {
+        argv.keys().for_each(|key| {
             let thekey = key.replace('-', "_");
             if !known_args.contains(&thekey.as_str()) {
-                eprintln!("Unknown argument: --{}", key);
+                eprintln!("Unknown argument: {}", key);
                 exit(1);
             }
-        }
+        });
 
         Args {
             name: Args::get_arg(&argv, "name", true, None),

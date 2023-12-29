@@ -10,7 +10,7 @@ checksum = "c007f456524f3f1e06e8929963425b5dadf8616d9110ea0809840c16997994e9"
 
 [[package]]
 name = "cmake-init"
-version = "0.1.0"
+version = "0.2.1"
 dependencies = [
  "argmap",
  "struct-field-names-as-array",

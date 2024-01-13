@@ -59,49 +59,24 @@ impl Args {
     ///
     /// * `argv` - The argument map.
     fn get_template(argv: &HashMap<String, Vec<String>>) -> String {
-        #[cfg(target_os = "linux")]
-        let templates_dir = Args::get_arg(
-            argv,
-            "templates-dir",
-            false,
-            Some(
-                format!(
-                    "{}/.local/share/cmake-init/templates",
-                    std::env::var("HOME").unwrap()
-                )
-                .as_str(),
-            ),
-        );
+        let default = if cfg!(target_os = "linux") {
+            Some(format!(
+                "{}/.local/share/cmake-init/templates",
+                std::env::var("HOME").unwrap()
+            ))
+        } else if cfg!(target_os = "macos") {
+            Some(format!(
+                "{}/Library/Application Support/cmake-init/templates",
+                std::env::var("HOME").unwrap()
+            ))
+        } else {
+            Some(format!(
+                "{}\\cmake-init\\templates",
+                std::env::var("APPDATA").unwrap()
+            ))
+        };
 
-        #[cfg(target_os = "windows")]
-        let templates_dir = Args::get_arg(
-            &argv,
-            "templates-dir",
-            false,
-            Some(
-                format!(
-                    "{}\\cmake-init\\templates",
-                    std::env::var("APPDATA").unwrap()
-                )
-                .as_str(),
-            ),
-        );
-
-        #[cfg(target_os = "macos")]
-        let templates_dir = Args::get_arg(
-            &argv,
-            "templates-dir",
-            false,
-            Some(
-                format!(
-                    "{}/Library/Application Support/cmake-init/templates",
-                    std::env::var("HOME").unwrap()
-                )
-                .as_str(),
-            ),
-        );
-
-        templates_dir
+        Args::get_arg(&argv, "templates-dir", false, default.as_deref())
     }
 
     /// Get the value of the argument at the given index.

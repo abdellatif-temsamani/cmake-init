@@ -119,7 +119,7 @@ impl Args {
     ) -> String {
         let default = &default.unwrap_or("").to_string();
 
-        match argv.get(index).unwrap_or(&vec![]).get(0) {
+        match argv.get(index).unwrap_or(&vec![]).first() {
             Some(expr) => expr.to_owned(),
             None => {
                 if required {
